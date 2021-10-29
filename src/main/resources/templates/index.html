@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{component::statics}"></head>
+<body>
+<div th:replace="~{component::header}"></div>
+
+<div class="aw-container-wrap">
+	<div th:replace="~{component::category}"></div>
+	<div class="container">
+		<div class="row">
+			<div class="aw-content-wrap clearfix">
+				<div class="col-sm-12 col-md-9 aw-main-content">
+					<!-- tab切换 -->
+					<ul class="nav nav-tabs aw-nav-tabs active hidden-xs">
+						<li><a href="https://elasticsearch.cn/sort_type-unresponsive"><span style="color: #E51C37">消灭零回复</span></a></li>
+						<li><a href="https://elasticsearch.cn/sort_type-hot__day-7" id="sort_control_hot">热门</a></li>
+						<li><a href="https://elasticsearch.cn/is_recommend-1">推荐</a></li>
+						<li class="active"><a href="https://elasticsearch.cn/">最新</a></li>
+
+						<h2 class="hidden-xs"><i class="glyphicon glyphicon-list" aria-hidden="true"></i> 发起</h2>
+					</ul>
+					<!-- end tab切换 -->
+					<div class="aw-mod aw-explore-list">
+						<div class="mod-body">
+							<div class="aw-common-list">
+
+							</div>
+						</div>
+						<div class="mod-footer">
+							<div class="page-control">
+								<ul class="pagination pull-right">
+									<li class="active"><a href="javascript:;">1</a></li>
+									<li><a href="https://elasticsearch.cn/day-0__is_recommend-0__page-2">2</a></li>
+									<li><a href="https://elasticsearch.cn/day-0__is_recommend-0__page-3">3</a></li>
+									<li><a href="https://elasticsearch.cn/day-0__is_recommend-0__page-4">4</a></li>
+									<li><a href="https://elasticsearch.cn/day-0__is_recommend-0__page-2">&gt;</a></li>
+									<li><a href="https://elasticsearch.cn/day-0__is_recommend-0__page-778">&gt;&gt;</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<!-- 侧边栏 -->
+			<div th:replace="~{component::sidebar}"></div>
+			<!-- end 侧边栏 -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<div th:replace="~{component::footer}"></div>
+<script>
+	$(function () {
+		$.get("/post/list",{},function (res){
+			if(res.state === 200){
+				let ul = "";
+				for(i=0;i<res.data.length;i++){
+
+					let li = `<div class="aw-item " data-topic-id="">
+						<a class="aw-user-name hidden-xs" data-id="17637" href="#" rel="nofollow">
+							<img src="" alt=""/>
+						</a>
+						<div class="aw-question-content">
+							<h4>
+								<a href="/article/${res.data[i].uuid}">${res.data[i].title}</a>
+							</h4>
+							<a href="/article/${res.data[i].uuid}"
+							   class="pull-right text-color-999">回复</a>
+							<p>
+								<a class="aw-question-tags"
+								   href="https://elasticsearch.cn/explore/category-2">${res.data[i].board.name}</a>•
+								<a href="https://elasticsearch.cn/people/Kevin_23" class="aw-user-name">${res.data[i].author.username}</a>
+								<span class="text-color-999">${res.data[i].commentCount} 个回复 • ${res.data[i].viewCount} 次浏览 • ${res.data[i].createdTime}</span>
+
+							</p>
+						</div>
+					</div>`;
+					ul +=li;
+				}
+				$(".aw-common-list").html(ul)
+			}
+		})
+	});
+</script>
+</body>
+</html>

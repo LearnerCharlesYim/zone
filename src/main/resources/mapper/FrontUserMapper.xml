@@ -1,0 +1,20 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.charles.zone.mapper.FrontUserMapper">
+
+    <select id="findByUsername" resultType="frontUser" parameterType="string">
+        select * from front_user where username=#{username}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="frontUser">
+        insert into front_user (uuid,username, password, salt, phone, email, gender, avatar,
+                                is_active, created_time)
+                    values
+                        (#{uuid},#{username},#{password},#{salt},#{phone},#{email},#{gender},
+                         #{avatar},#{isActive},#{createdTime})
+    </insert>
+
+
+</mapper>

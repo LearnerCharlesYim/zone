@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{component::statics}"></head>
+
+<body>
+<div th:replace="~{component::header}"></div>
+<div class="aw-container-wrap">
+    <div class="container">
+        <div class="row">
+            <div class="aw-content-wrap clearfix">
+                <div class="col-sm-12 col-md-9 aw-main-content">
+                    <ul class="nav nav-tabs aw-nav-tabs active hidden-xs">
+                        <li class="active"><a href="javascript:;"><span>问题</span></a></li>
+
+                        <h2 class="hidden-xs"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> 发起</h2>
+                    </ul>
+
+                    <div style="margin-top: 10px;padding: 20px;">
+                        <span>问题标题(简单扼要)：</span>
+                        <form class="form-inline" style="margin-top: 10px;">
+                            <div class="form-group">
+                                <input  style="width: 600px" type="text" class="form-control" id="title" placeholder="问题标题...">
+                            </div>
+                            <div class="form-group" style="margin-left: 10px">
+                                <select style="width: 190px" id="board" name="boardId" class="form-control">
+                                    <option value="" disabled selected>选择分类</option>
+                                    <option th:each="board:${boardList}" th:value="${board.id}" th:text="${board.name}"></option>
+                                </select>
+                            </div>
+                        </form>
+                        <span class="msg" style="color: red"></span>
+                        <span class="msg-board" style="color: red;float: right;margin-right: 100px;"></span>
+
+                        <div style="margin-top: 30px;">
+                            <span >问题补充(必填)：</span>
+                            <div style="margin-top: 10px;">
+                                <script id="editor"  type="text/plain" name="content" style="width:100%;height:400px;"></script>
+                            </div>
+                        </div>
+                        <button type="button" style="margin-top: 10px;width: 100px;" class="btn btn-primary submit">发布</button>
+                    </div>
+
+                </div>
+                <div th:replace="~{component::sidebar}"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //实例化编辑器
+    const ue = UE.getEditor('editor', {
+    });
+
+    function checkTitle() {
+        const titleInput = $("#title");
+        if(titleInput.val().trim() === ""){
+            $(".msg").text("标题不能为空");
+            window.scrollTo(0,0);
+            return false;
+        }else{
+            $(".msg").text("");
+            return true;
+        }
+    }
+
+    function checkSelect(){
+        if($("#board").val() === null){
+            $(".msg-board").text("请选择问题分类");
+            scrollTo(0,0);
+            return false;
+        }else {
+            $(".msg-board").text("");
+            return true;
+        }
+    }
+
+    $(function () {
+        $("#title").blur(checkTitle);
+        $("#board").change(checkSelect);
+        $(".submit").click(function () {
+            if(!checkTitle()||!checkSelect()){
+                return;
+            }
+            const title = $("#title").val();
+            const boardId = $("#board").val();
+            console.log(boardId);
+            const content =  ue.getContent();
+            $.post("/publish",{title:title,boardId:boardId,content:content},function (res) {
+                if(res.state === 200){
+                    sweetAlert.alertSuccess("发表成功",() =>{
+                        location.href = "/";
+                    })
+                }
+            })
+        })
+    });
+
+</script>
+</body>
+</html>

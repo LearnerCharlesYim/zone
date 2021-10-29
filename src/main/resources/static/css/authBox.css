@@ -1,0 +1,32 @@
+.auth-box {
+    float: right;
+    color: #fff; }
+.auth-box .user-more-box{
+    background: #ffffff;
+    width:120px;
+    position: absolute;
+    box-shadow: 0 3px 4px #cccccc;
+    border-radius: 5px;
+    top :36px;
+    /*right: 30px;*/
+    margin-left: -56px;
+    left: 90%;
+    font-size: 14px;
+    z-index: 2;
+    display: none;}
+.auth-box .user-more-box .triangle{
+    border:solid transparent;
+    border-width: 10px;
+    border-bottom-color: #ffffff;
+    display: block;
+    width: 0;
+    height: 0;
+    margin-top: -20px;
+    margin-left: 50px;}
+.auth-box .user-more-box a{
+    text-align: center;
+    height: 44px;
+    color: #6d85ac!important;
+    display: block;
+    line-height: 44px;
+}

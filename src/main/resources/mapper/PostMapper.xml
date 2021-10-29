@@ -1,0 +1,95 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.charles.zone.mapper.PostMapper">
+    <resultMap id="postMap" type="post">
+        <id column="pid" property="id"></id>
+        <result column="uuid" property="uuid"></result>
+        <result column="title" property="title"></result>
+        <result column="comment_count" property="commentCount"></result>
+        <result column="view_count" property="viewCount"></result>
+        <result column="time" property="createdTime"></result>
+        <result column="name" property="board.name"></result>
+        <result column="username" property="author.username"></result>
+        <result column="avatar" property="author.avatar"></result>
+    </resultMap>
+
+    <resultMap id="postMapTwo" type="post">
+        <id column="puuid" property="uuid"></id>
+        <result column="title" property="title"></result>
+        <result column="content" property="content"></result>
+        <result column="comment_count" property="commentCount"></result>
+        <result column="view_count" property="viewCount"></result>
+        <result column="time" property="createdTime"></result>
+        <result column="name" property="board.name"></result>
+        <result column="username" property="author.username"></result>
+        <result column="avatar" property="author.avatar"></result>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="post">
+        insert into post (uuid,title,content,created_time,board_id,author_id,view_count)
+        values (#{uuid},#{title},#{content},#{createdTime},#{board.id},#{author.id},#{viewCount})
+    </insert>
+
+    <select id="findAll" resultMap="postMap">
+        SELECT
+            *
+        FROM
+            (SELECT
+                 post.id pid,
+                 post.uuid,
+                 post.title,
+                 post.created_time time,
+                 post.board_id,
+                 post.author_id,
+                 post.view_count,
+                 count(`comment`.id) comment_count
+             FROM
+                 post
+                     LEFT JOIN
+                 `comment`
+                 ON
+                     post.uuid= `comment`.post_uuid
+             GROUP BY
+                 post.id) p1,front_user,board
+        WHERE
+            p1.author_id = front_user.id
+        AND
+            p1.board_id = board.id
+        ORDER BY
+            p1.time DESC
+
+    </select>
+
+    <select id="findByUuid" parameterType="string" resultMap="postMapTwo">
+        SELECT
+            *
+        FROM
+            (SELECT
+                 p.uuid puuid,
+                 p.title,
+                 p.content,
+                 p.created_time time,
+                 p.author_id,
+                 p.view_count,
+                 p.board_id,
+                 count(`comment`.id) comment_count
+             FROM
+                 (SELECT*FROM post WHERE post.uuid=#{uuid}) p
+                 LEFT JOIN
+                 `comment`
+             ON
+                 p.uuid = `comment`.post_uuid
+
+                 ) p1,
+            front_user,
+            board
+        WHERE
+            p1.author_id = front_user.id
+          AND
+            p1.board_id = board.id
+
+    </select>
+
+</mapper>

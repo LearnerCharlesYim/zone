@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{component::statics}"></head>
+
+<body>
+<div th:replace="~{component::header}"></div>
+<div class="aw-container-wrap">
+    <div class="container">
+        <div class="row">
+            <div class="aw-content-wrap clearfix">
+                <div class="col-sm-12 col-md-9 aw-main-content">
+                    <div id="main-content" class="aw-mod aw-question-detail aw-item">
+
+                    </div>
+
+                    <div class="aw-mod aw-question-comment">
+                        <div id="commentCount" class="mod-head">
+
+                        </div>
+                        <div class="mod-body aw-feed-list">
+                            <div class="aw-item">
+                                <div class="mod-head">
+                                    <a class="anchor" name="answer_16761"></a>
+                                    <!-- 用户头像 -->
+                                    <a class="aw-user-img aw-border-radius-5" href="https://elasticsearch.cn/people/Charele" data-id="12694"><img src="https://elasticsearch.cn/static/common/avatar-mid-img.png" alt="" data-bd-imgshare-binded="1"></a>										<!-- end 用户头像 -->
+                                    <div class="title">
+                                        <p>
+                                            <a class="aw-user-name" href="https://elasticsearch.cn/people/Charele" data-id="12694">Charele</a>
+                                        </p>
+
+                                    </div>
+                                </div>
+                                <div class="mod-body clearfix">
+                                    <!-- 评论内容 -->
+                                    <div class="markitup-box">
+                                        增加一个分片副本，会在别的节点上新建一个分片，然后进行peer恢复。<br>
+                                        先把检查点之前的文件（就是你说的段信息）拷过去，然后恢复检查点之后的数据（如果有的话）
+                                    </div>
+
+                                    <!-- end 评论内容 -->
+                                </div>
+                                <div class="mod-footer">
+                                    <!-- 社交操作 -->
+                                    <div class="meta clearfix">
+                                        <span class="text-color-999 pull-right">2 小时前</span>
+                                        <!-- 投票栏 -->
+                                        <span class="operate">
+											<a class="agree  disabled"><i data-placement="right" title="" data-toggle="tooltip" class="glyphicon glyphicon-thumbs-up" data-original-title="赞同回复"></i> <b class="count">0</b></a>
+                                        </span>
+                                        <!-- end 投票栏 -->
+                                        <span class="operate">
+                                            <a class="aw-add-comment" data-id="16761" data-type="answer" data-comment-count="0" href="javascript:;"><i class="glyphicon glyphicon-comment"></i> 0</a>
+                                        </span>
+                                    </div>
+                                    <!-- end 社交操作 -->
+                                    <div class="aw-comment-box" id="aw-comment-box-answer-16761" style="display: none;"><div class="aw-comment-list"><div align="center" class="aw-padding10">暂无评论</div></div></div></div>
+                            </div>
+                        </div>
+                        <div class="mod-footer">
+                            <div class="aw-load-more-content hide" id="load_uninterested_answers">
+                                <span class="text-color-999 aw-alert-box text-color-999" href="javascript:;" tabindex="-1" onclick="AWS.alert('被折叠的回复是被你或者被大多数用户认为没有帮助的回复');">为什么被折叠?</span>
+                                <a href="javascript:;" class="aw-load-more-content"><span class="hide_answers_count">0</span> 个回复被折叠</a>
+                            </div>
+
+                            <div class="hide aw-feed-list" id="uninterested_answers_list"></div>
+                        </div>
+                    </div>
+
+                    <!-- 回复编辑器 -->
+                    <div class="aw-mod aw-replay-box question">
+                        <a name="answer_form"></a>
+                        <p align="center">要回复问题请先<a href="https://elasticsearch.cn/account/login/">登录</a>或<a href="https://elasticsearch.cn/account/register/">注册</a></p>
+                    </div>
+                    <!-- end 回复编辑器 -->
+                </div>
+
+
+                <!-- 侧边栏 -->
+                <div class="col-sm-12 col-md-3 aw-side-bar hidden-xs hidden-sm">
+                    <style>
+                        .aw-side-bar .right-ad {margin-bottom:10px}
+                        .aw-side-bar .right-ad a{margin-bottom:10px;display: block;}
+                    </style>
+                    <div class="aw-mod interest-user">
+                        <div class="mod-head"><h3>活动推荐</h3></div>
+                        <style>
+                            .activity-recommend-item {
+                                display: block;
+                                text-decoration: none;
+                                padding-top: 8px;
+                                padding-bottom: 8px;
+                            }
+
+                            .activity-recommend-item:not(:last-child) {
+                                border-bottom: 1px dashed #eee;
+                            }
+
+                            .activity-date-wrapper {
+                                width: 32px;
+                                padding: 4px;
+                                height: 34px;
+                                background: #C8E9DE !important;
+                                border-radius: 2px;
+                                line-height: 95% !important;
+                            }
+
+                            .activity-detail{
+                                font-size: 12px;
+                                margin-left:40px;
+                            }
+
+                            .activity-detail-title{
+                                font-size: 14px;
+                            }
+
+                            .activity-recommend a {
+                                color: #009a61;
+                                text-decoration: none;
+                            }
+
+                            .activity-date-up {
+                                font-size: 12px;
+                                transform: scale(0.833);
+                            }
+
+                            .activity-date-down {
+                                font-size: 16px;
+                            }
+
+                            .activity-date {
+                                color: #017E66;
+                                margin-right: 10px;
+                                margin-top: 3px;
+                                text-align: center;
+                            }
+                            .activity-detail-base {
+                                font-size: 12px;
+                                color: #999;
+                            }
+                            .dot {
+                                color: #999;
+                                font-weight: normal;
+                                padding: 0 5px;
+                            }
+                            .activity-state {
+                                font-size: 12px;
+                                color: #f5b933;
+                            }
+                            .activity-state-on{
+                                font-size: 12px;
+                                color: #f52f1e;
+                            }
+
+                        </style>
+                        <div class="mod-body">
+                            <a class="activity-recommend-item" href="#">
+                                <div class="activity-date pull-left">
+                                    <div class="activity-date-wrapper">
+                                        <div class="activity-date-up">Nov</div>
+                                        <div class="activity-date-down">13</div>
+                                    </div>
+                                </div>
+                                <div class="activity-detail">
+                                    <div class="activity-detail-title">Elastic 2021 线下技术沙龙-武汉站</div>
+                                    <span class="activity-detail-base">武汉</span><span class="dot">·</span>11-13&nbsp;周六<span class="dot">·</span><span class="activity-state">报名中</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="aw-mod aw-text-align-justify">
+                        <div class="mod-head">
+                            <a href="https://elasticsearch.cn/topic/channel-hot" class="pull-right">更多 &gt;</a>
+                            <h3>热门话题</h3>
+                        </div>
+                        <div class="mod-body">
+                            <dl>
+                                <dt class="pull-left aw-border-radius-5">
+                                    <a href="https://elasticsearch.cn/topic/Elastic日报"><img alt="" src="https://elasticsearch.cn/uploads/topic/20170801/c323ba600f2ebc015b15c9d329e29369_50_50.jpeg" /></a>
+                                </dt>
+                                <dd class="pull-left">
+                                    <p class="clearfix">
+										<span class="topic-tag">
+											<a href="https://elasticsearch.cn/topic/Elastic日报" class="text" data-id="1352">Elastic日报</a>
+										</span>
+                                    </p>
+                                    <p><b>1213</b> 个问题, <b>149</b> 人关注</p>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt class="pull-left aw-border-radius-5">
+                                    <a href="https://elasticsearch.cn/topic/Elastic日报"><img alt="" src="https://elasticsearch.cn/uploads/topic/20170801/c323ba600f2ebc015b15c9d329e29369_50_50.jpeg" /></a>
+                                </dt>
+                                <dd class="pull-left">
+                                    <p class="clearfix">
+										<span class="topic-tag">
+											<a href="https://elasticsearch.cn/topic/Elastic日报" class="text" data-id="1352">Elastic日报</a>
+										</span>
+                                    </p>
+                                    <p><b>1213</b> 个问题, <b>149</b> 人关注</p>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt class="pull-left aw-border-radius-5">
+                                    <a href="https://elasticsearch.cn/topic/Elastic日报"><img alt="" src="https://elasticsearch.cn/uploads/topic/20170801/c323ba600f2ebc015b15c9d329e29369_50_50.jpeg" /></a>
+                                </dt>
+                                <dd class="pull-left">
+                                    <p class="clearfix">
+										<span class="topic-tag">
+											<a href="https://elasticsearch.cn/topic/Elastic日报" class="text" data-id="1352">Elastic日报</a>
+										</span>
+                                    </p>
+                                    <p><b>1213</b> 个问题, <b>149</b> 人关注</p>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt class="pull-left aw-border-radius-5">
+                                    <a href="https://elasticsearch.cn/topic/Elastic日报"><img alt="" src="https://elasticsearch.cn/uploads/topic/20170801/c323ba600f2ebc015b15c9d329e29369_50_50.jpeg" /></a>
+                                </dt>
+                                <dd class="pull-left">
+                                    <p class="clearfix">
+										<span class="topic-tag">
+											<a href="https://elasticsearch.cn/topic/Elastic日报" class="text" data-id="1352">Elastic日报</a>
+										</span>
+                                    </p>
+                                    <p><b>1213</b> 个问题, <b>149</b> 人关注</p>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    常用链接
+                    <br/>
+                    <a href="https://www.elastic.co/" target="_blank">
+                        <span style="font-size: 12px;clear: both;"><i class="glyphicon glyphicon-book"> </i>Elastic 官方网站</span>
+                    </a>
+                    <br/>
+                    <a href="http://v.qq.com/vplus/ccbfe87ac7828b23a25e9827b38c171e" target="_blank">
+                        <span style="font-size: 12px;clear: both;"><i class="glyphicon glyphicon-book"> </i>Elastic 社区分享回放</span>
+                    </a>
+                    <br/>
+                </div>
+                <!-- end 侧边栏 -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        const param = location.href.split("/")[location.href.split("/").length - 1];
+       $.get("/post/"+param,{},function (res) {
+            if(res.state === 200){
+                let html = `
+                      <div class="mod-head">
+                            <h1>${res.data.title}</h1>
+                            <em class="text-color-999">
+                                <a class="aw-question-tags" href="#">${res.data.board.name}</a>
+                                | 作者
+                                <a class="aw-user-name" href="#" data-id="10161">${res.data.author.username}</a>
+                                | 发布于${res.data.createdTime}| 阅读数：<span>${res.data.viewCount}</span>
+                            </em>
+                            <hr>
+                        </div>
+                        <div class="mod-body">
+                            <div class="content markitup-box">
+                                ${res.data.content}
+                            </div>
+                        </div>
+                        <div class="mod-footer">
+                            <div class="meta">
+                                <span class="text-color-999">${res.data.createdTime}</span>
+                                <a data-id="11725" data-type="question" class="aw-add-comment text-color-999  active" data-comment-count="0"><i class="glyphicon glyphicon-comment"></i>添加评论</a>
+
+                                <div class="pull-right more-operate">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                `;
+                $("#main-content").html(html);
+                $("#commentCount").html(
+                    `<ul class="nav nav-tabs aw-nav-tabs active">
+                        <h2 class="hidden-xs">${res.data.commentCount} 个回复</h2>
+                    </ul>
+                    `
+                )
+            }
+       })
+    });
+</script>
+
+<div th:replace="~{component::footer}"></div>
+</body>
+</html>
