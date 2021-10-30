@@ -201,6 +201,7 @@
     </div>
 </div>
 
+<div th:replace="~{component::footer}"></div>
 <script th:inline="javascript">
     $(function () {
         const param = location.href.split("/")[location.href.split("/").length - 1];
@@ -244,13 +245,12 @@
                     `
                 )
             }
-       });
+        });
         $.get("/comment/list/"+param,{},function (res){
             if(res.state === 200){
-                let html = "";
+                let html = ``;
                 for(let i=0;i<res.data.length;i++){
-                    html +=  `
-                         <div class="aw-item">
+                    html +=  `<div class="aw-item">
                                 <div class="mod-head">
                                     <a class="anchor" name="answer_16761"></a>
                                     <!-- 用户头像 -->
@@ -272,51 +272,118 @@
                                 <div class="mod-footer">
                                     <!-- 社交操作 -->
                                     <div class="meta clearfix">
-                                        <span class="text-color-999 pull-right">${res.data[i].createdTime}</span>
-                                        <!-- 投票栏 -->
-                                        <span class="operate">
-                                            <a class="agree  disabled"><i data-placement="right" title="" data-toggle="tooltip" class="glyphicon glyphicon-thumbs-up" data-original-title="赞同回复"></i> <b class="count">0</b></a>
-                                        </span>
-                                        <!-- end 投票栏 -->
-                                        <span class="operate">
-                                            <a class="aw-add-comment" data-id="16761" data-type="answer" data-comment-count="0" href="javascript:;"><i class="glyphicon glyphicon-comment"></i> ${res.data[i].children.length}</a>
-                                        </span>
-                                    </div>`;
-                    if(res.data[i].children.length === 0){
-                        html += `<div class="aw-comment-box"><div class="aw-comment-list"><div align="center" class="aw-padding10">暂无评论</div></div></div></div>`;
+                                            <span class="text-color-999 pull-right reply" flag="close" data-id="${res.data[i].uuid}" style="cursor: pointer">回复</span>
+                                            <span class="text-color-999 pull-right" style="margin-right: 10px;">${res.data[i].createdTime}</span>
+
+                                            <!-- 投票栏 -->
+                                            <span class="operate">
+                                                <a class="agree  disabled"><i data-placement="right" title="" data-toggle="tooltip" class="glyphicon glyphicon-thumbs-up" data-original-title="赞同回复"></i> <b class="count">0</b></a>
+                                            </span>
+                                            <!-- end 投票栏 -->
+                                            <span class="operate add-comment">
+                                                <a class="aw-add-comment"  data-type="answer" data-comment-count="0" href="javascript:;"><i class="glyphicon glyphicon-comment"></i> ${res.data[i].children.length}</a>
+                                            </span>
+                                     </div>
+                                    `;
+                        if(res.data[i].children.length === 0){
+                            html += ` <div class="aw-comment-box" style="display: none">
+                                            <div class="aw-comment-list">
+                                                <div align="center" class="aw-padding10">暂无评论</div>
+                                            </div>
+                                       </div>`;
                     }else{
-                        html += `<div class="aw-comment-box"><ul><div class="aw-comment-list">`;
+                            html += `  <div class="aw-comment-box">
+                                            <div class="aw-comment-list">
+                                                <ul>
+
+                                            `;
                         for (let j=0;j<res.data[i].children.length;j++){
                             html += `
-                                        <li>
-                                            <a class="aw-user-name" href="#">
-                                                <img src="/css/default/img/avatar-mid-img.png" alt="" data-bd-imgshare-binded="1">
-                                           </a>
-                                           <div>
-                                                <a href="#" class="aw-user-name author">${res.data[i].children[j].author.username}</a>
-                                                " • "
-                                                <span>${res.data[i].children[j].createdTime}</span>
-                                                <p class="clearfix">
-                                                    @${res.data[i].children[j].replyToAuthor.username}
-                                                    ${res.data[i].children[j].content}
-                                                </p>
-                                           </div>
-                                          </li>
+                                                    <li>
+                                                        <a class="aw-user-name" href="#">
+                                                            <img src="/css/default/img/avatar-mid-img.png" alt="" data-bd-imgshare-binded="1">
+                                                        </a>
+                                                        <div class="">
+                                                            <a href="#" class="aw-user-name author">${res.data[i].children[j].author.username}</a>
+                                                                 •
+                                                            <span>${res.data[i].children[j].createdTime}</span>
+                                                            <p class="clearfix">
+                                                                @${res.data[i].children[j].replyToAuthor.username}&nbsp;
+                                                                ${res.data[i].children[j].content}
+                                                                <span class="text-color-999 pull-right replyTo" data-id="${res.data[i].uuid}" data-name="${res.data[i].children[j].author.username}" flag="close" style="cursor: pointer;float: right">回复</span>
+
+                                                            </p>
+                                                        </div>
+                                                    </li>
+                                       `
+                        }
+                        html += `                </ul>
+                                             </div>
+                                          </div>
 
                                     `
-                        }
-                        html += `</ul></div></div></div>`
-
                     }
-
+                    html += `</div></div>`
                 }
                 $("#commentList").html(html);
 
             }
         });
+
+        const container = $(".container");
+        //回复box
+        const replyBox = ` <div class="replyBox" style="padding-bottom: 40px;">
+                              <div class="form-group">
+                                  <textarea class="form-control" rows="3" placeholder="发表神评妙论" style="margin: 0 16.5px 0 0; width: 728px; height: 76px;"></textarea>
+                              </div><button type="button" class="btn btn-info" style="width: 80px;">发表</button>
+                           </div>`
+
+        const replyBoxTo = ` <div class="replyBox" style="padding-top: 20px;">
+                              <div class="form-group">
+                                  <textarea class="form-control" rows="3" placeholder="" style="margin: 0 16.5px 0 0; width: 660px; height: 76px;"></textarea>
+                              </div><button type="button" class="btn btn-info" style="width: 80px;">发表</button>
+                           </div>`
+
+        container.on("click",'.add-comment',function () {
+            let self = $(this);
+            self.parent().parent().find(".aw-comment-box").toggle("slow");
+        })
+
+        //根评论回复点击事件
+        container.on("click",'.reply',function () {
+            let self = $(this);
+            if(self.attr("flag") === 'close'){
+                $(".reply").attr("flag","close");
+                $(".replyTo").attr("flag","close");
+                $(".replyBox").remove();
+                self.parent().parent().find(".aw-comment-box").show();
+                self.parent().parent().find(".aw-comment-list").prepend(replyBox);
+                self.parent().parent().find(".replyBox button").attr("data-id",self.attr("data-id"));
+                self.attr("flag","open");
+            }else{
+                $(".replyBox").remove();
+                self.attr("flag","close");
+            }
+        })
+        //子评论回复点击事件
+        container.on("click",'.replyTo',function () {
+            let self = $(this);
+            if(self.attr("flag") === "close"){
+                $(".reply").attr("flag","close");
+                $(".replyTo").attr("flag","close");
+                $(".replyBox").remove();
+                self.parent().parent().after(replyBoxTo);
+                self.parent().parent().parent().find(".replyBox button").attr("data-id",self.attr("data-id")).attr("data-name",self.attr("data-name"));
+                self.parent().parent().parent().find(".replyBox textarea").prop("placeholder","回复"+self.attr("data-name"));
+                self.attr("flag","open");
+            }else{
+                $(".replyBox").remove();
+                self.attr("flag","close");
+            }
+
+        })
+
     })
 </script>
-
-<div th:replace="~{component::footer}"></div>
 </body>
 </html>
