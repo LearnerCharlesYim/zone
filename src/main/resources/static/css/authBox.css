@@ -1,6 +1,7 @@
 .auth-box {
     float: right;
-    color: #fff; }
+    color: #fff;
+    height: 40px;}
 .auth-box .user-more-box{
     background: #ffffff;
     width:120px;

@@ -96,7 +96,7 @@
         $(".logout").click(function () {
           $.post("/frontUser/logout",{},function (res) {
             if(res.state === 200){
-              location.reload();
+              location.href = '/';
             }
           })
         })
@@ -311,7 +311,17 @@
   </div>
 
   <div class="aw-back-top hidden-xs" >
-    <i class="glyphicon glyphicon-edit"></i>
-    <i class="glyphicon glyphicon-menu-up icon-up"></i>
+    <i onclick="publish()" class="glyphicon glyphicon-edit"></i>
+    <i onclick="window.scrollTo(0,0);" class="glyphicon glyphicon-menu-up icon-up"></i>
   </div>
+  <script th:inline="javascript">
+      function publish(){
+        const user = [[${session.frontUser}]];
+        if(user){
+          location.href = "/publish";
+        }else{
+          $(".login-btn").click();
+        }
+      }
+  </script>
 </div>

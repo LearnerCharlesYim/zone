@@ -1,4 +1,4 @@
-package com.charles.zone.controller.ex;
+package com.charles.zone.controller;
 
 import com.charles.zone.domain.Board;
 import com.charles.zone.service.BoardService;

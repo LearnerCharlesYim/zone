@@ -1,0 +1,79 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.charles.zone.mapper.CommentMapper">
+    <resultMap id="commentMap" type="comment">
+        <id column="mid" property="id"></id>
+        <result column="uuid" property="uuid"></result>
+        <result column="content" property="content"></result>
+        <result column="is_root" property="isRoot"></result>
+        <result column="time" property="createdTime"></result>
+
+        <result column="title" property="post.title"></result>
+        <result column="post_uuid" property="post.uuid"></result>
+
+        <result column="author_name" property="author.username"></result>
+        <result column="author_avatar" property="author.avatar"></result>
+
+        <result column="reply_name" property="replyToAuthor.username"></result>
+        <result column="reply_avatar" property="replyToAuthor.avatar"></result>
+    </resultMap>
+
+    <select id="findByPostUuId" resultMap="commentMap" parameterType="string">
+        SELECT
+            *,
+            u1.username author_name,
+            u1.avatar author_avatar
+        FROM
+            (SELECT
+                 *,
+                `comment`.created_time time,
+                `comment`.id mid
+             FROM
+                 `comment`
+             WHERE
+                 `comment`.post_uuid = #{uuid}
+             AND
+                 `comment`.is_root = 1
+                ) c1 , front_user u1 ,post
+        WHERE
+            c1.author_id = u1.id
+        AND
+            c1.post_uuid = post.uuid
+        GROUP BY
+            c1.time DESC
+
+    </select>
+
+    <select id="findChildrenByRootId" resultMap="commentMap" parameterType="integer">
+        SELECT
+            *,
+            u1.username author_name,
+            u1.avatar author_avatar,
+            u2.username reply_name,
+            u2.avatar reply_avatar
+        FROM
+            (SELECT
+                 *,
+                 `comment`.created_time time,
+                 `comment`.id mid
+             FROM
+                 `comment`
+             WHERE
+                 `comment`.root_comment_id = #{id}
+               AND
+                 `comment`.is_root = 0
+            ) c1 , front_user u1 , front_user u2 ,post
+        WHERE
+            c1.author_id = u1.id
+          AND
+            c1.post_uuid = post.uuid
+          AND
+            c1.reply_to_author_id = u2.id
+
+
+    </select>
+
+
+</mapper>

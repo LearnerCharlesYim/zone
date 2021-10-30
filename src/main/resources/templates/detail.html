@@ -17,53 +17,10 @@
                         <div id="commentCount" class="mod-head">
 
                         </div>
-                        <div class="mod-body aw-feed-list">
-                            <div class="aw-item">
-                                <div class="mod-head">
-                                    <a class="anchor" name="answer_16761"></a>
-                                    <!-- 用户头像 -->
-                                    <a class="aw-user-img aw-border-radius-5" href="https://elasticsearch.cn/people/Charele" data-id="12694"><img src="https://elasticsearch.cn/static/common/avatar-mid-img.png" alt="" data-bd-imgshare-binded="1"></a>										<!-- end 用户头像 -->
-                                    <div class="title">
-                                        <p>
-                                            <a class="aw-user-name" href="https://elasticsearch.cn/people/Charele" data-id="12694">Charele</a>
-                                        </p>
+                        <div id="commentList" class="mod-body aw-feed-list">
 
-                                    </div>
-                                </div>
-                                <div class="mod-body clearfix">
-                                    <!-- 评论内容 -->
-                                    <div class="markitup-box">
-                                        增加一个分片副本，会在别的节点上新建一个分片，然后进行peer恢复。<br>
-                                        先把检查点之前的文件（就是你说的段信息）拷过去，然后恢复检查点之后的数据（如果有的话）
-                                    </div>
-
-                                    <!-- end 评论内容 -->
-                                </div>
-                                <div class="mod-footer">
-                                    <!-- 社交操作 -->
-                                    <div class="meta clearfix">
-                                        <span class="text-color-999 pull-right">2 小时前</span>
-                                        <!-- 投票栏 -->
-                                        <span class="operate">
-											<a class="agree  disabled"><i data-placement="right" title="" data-toggle="tooltip" class="glyphicon glyphicon-thumbs-up" data-original-title="赞同回复"></i> <b class="count">0</b></a>
-                                        </span>
-                                        <!-- end 投票栏 -->
-                                        <span class="operate">
-                                            <a class="aw-add-comment" data-id="16761" data-type="answer" data-comment-count="0" href="javascript:;"><i class="glyphicon glyphicon-comment"></i> 0</a>
-                                        </span>
-                                    </div>
-                                    <!-- end 社交操作 -->
-                                    <div class="aw-comment-box" id="aw-comment-box-answer-16761" style="display: none;"><div class="aw-comment-list"><div align="center" class="aw-padding10">暂无评论</div></div></div></div>
-                            </div>
                         </div>
-                        <div class="mod-footer">
-                            <div class="aw-load-more-content hide" id="load_uninterested_answers">
-                                <span class="text-color-999 aw-alert-box text-color-999" href="javascript:;" tabindex="-1" onclick="AWS.alert('被折叠的回复是被你或者被大多数用户认为没有帮助的回复');">为什么被折叠?</span>
-                                <a href="javascript:;" class="aw-load-more-content"><span class="hide_answers_count">0</span> 个回复被折叠</a>
-                            </div>
 
-                            <div class="hide aw-feed-list" id="uninterested_answers_list"></div>
-                        </div>
                     </div>
 
                     <!-- 回复编辑器 -->
@@ -244,10 +201,10 @@
     </div>
 </div>
 
-<script>
+<script th:inline="javascript">
     $(function () {
         const param = location.href.split("/")[location.href.split("/").length - 1];
-       $.get("/post/"+param,{},function (res) {
+        $.get("/post/"+param,{},function (res) {
             if(res.state === 200){
                 let html = `
                       <div class="mod-head">
@@ -287,8 +244,77 @@
                     `
                 )
             }
-       })
-    });
+       });
+        $.get("/comment/list/"+param,{},function (res){
+            if(res.state === 200){
+                let html = "";
+                for(let i=0;i<res.data.length;i++){
+                    html +=  `
+                         <div class="aw-item">
+                                <div class="mod-head">
+                                    <a class="anchor" name="answer_16761"></a>
+                                    <!-- 用户头像 -->
+                                    <a class="aw-user-img aw-border-radius-5" href="#"><img src="/css/default/img/avatar-mid-img.png" alt="" data-bd-imgshare-binded="1"></a>
+                                    <div class="title">
+                                        <p>
+                                            <a class="aw-user-name" href="#" data-id="12694">${res.data[i].author.username}</a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="mod-body clearfix">
+                                    <!-- 评论内容 -->
+                                    <div class="markitup-box">
+                                        ${res.data[i].content}
+                                    </div>
+
+                                    <!-- end 评论内容 -->
+                                </div>
+                                <div class="mod-footer">
+                                    <!-- 社交操作 -->
+                                    <div class="meta clearfix">
+                                        <span class="text-color-999 pull-right">${res.data[i].createdTime}</span>
+                                        <!-- 投票栏 -->
+                                        <span class="operate">
+                                            <a class="agree  disabled"><i data-placement="right" title="" data-toggle="tooltip" class="glyphicon glyphicon-thumbs-up" data-original-title="赞同回复"></i> <b class="count">0</b></a>
+                                        </span>
+                                        <!-- end 投票栏 -->
+                                        <span class="operate">
+                                            <a class="aw-add-comment" data-id="16761" data-type="answer" data-comment-count="0" href="javascript:;"><i class="glyphicon glyphicon-comment"></i> ${res.data[i].children.length}</a>
+                                        </span>
+                                    </div>`;
+                    if(res.data[i].children.length === 0){
+                        html += `<div class="aw-comment-box"><div class="aw-comment-list"><div align="center" class="aw-padding10">暂无评论</div></div></div></div>`;
+                    }else{
+                        html += `<div class="aw-comment-box"><ul><div class="aw-comment-list">`;
+                        for (let j=0;j<res.data[i].children.length;j++){
+                            html += `
+                                        <li>
+                                            <a class="aw-user-name" href="#">
+                                                <img src="/css/default/img/avatar-mid-img.png" alt="" data-bd-imgshare-binded="1">
+                                           </a>
+                                           <div>
+                                                <a href="#" class="aw-user-name author">${res.data[i].children[j].author.username}</a>
+                                                " • "
+                                                <span>${res.data[i].children[j].createdTime}</span>
+                                                <p class="clearfix">
+                                                    @${res.data[i].children[j].replyToAuthor.username}
+                                                    ${res.data[i].children[j].content}
+                                                </p>
+                                           </div>
+                                          </li>
+
+                                    `
+                        }
+                        html += `</ul></div></div></div>`
+
+                    }
+
+                }
+                $("#commentList").html(html);
+
+            }
+        });
+    })
 </script>
 
 <div th:replace="~{component::footer}"></div>
