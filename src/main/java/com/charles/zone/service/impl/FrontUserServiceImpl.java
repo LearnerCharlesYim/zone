@@ -27,6 +27,11 @@ public class FrontUserServiceImpl implements FrontUserService {
     }
 
     @Override
+    public FrontUser findByUsername(String username) {
+        return frontUserMapper.findByUsername(username);
+    }
+
+    @Override
     public void register(FrontUser frontUser) {
         isUsernameDuplicated(frontUser.getUsername());
         Date now = new Date();

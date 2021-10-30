@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/error")
-public class ErrorController {
+public class ErrorController extends BaseController {
     @RequestMapping("/405")
     public String Error405(){
         return "error/405";

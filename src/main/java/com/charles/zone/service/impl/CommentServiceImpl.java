@@ -22,4 +22,9 @@ public class CommentServiceImpl implements CommentService {
         }
         return rootCommentList;
     }
+
+    @Override
+    public void save(Comment comment) {
+        commentMapper.insert(comment);
+    }
 }

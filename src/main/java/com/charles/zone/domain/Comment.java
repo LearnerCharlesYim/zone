@@ -14,8 +14,10 @@ import java.util.List;
 public class Comment {
     private Integer id;
     private String uuid;
+    private String postUuid;
     private String content;
     private Integer isRoot;
+    private Integer rootCommentId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdTime;
 

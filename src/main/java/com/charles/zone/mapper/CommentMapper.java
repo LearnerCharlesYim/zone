@@ -12,4 +12,8 @@ public interface CommentMapper {
 
     List<Comment> findChildrenByRootId(Integer id);
 
+    Integer insert(Comment comment);
+
+    Comment findById(Integer id);
+
 }

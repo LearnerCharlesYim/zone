@@ -75,5 +75,15 @@
 
     </select>
 
+    <insert id="insert" parameterType="comment" keyProperty="id" useGeneratedKeys="true">
+        insert into comment(uuid,content,post_uuid,author_id,is_root,root_comment_id,
+                            reply_to_author_id,created_time)
+                    values(#{uuid},#{content},#{postUuid},#{author.id},#{isRoot},#{rootCommentId},#{replyToAuthor.id},
+                    #{createdTime})
+    </insert>
+
+    <select id="findById" resultType="comment" parameterType="integer">
+        select * from comment where id=#{id}
+    </select>
 
 </mapper>

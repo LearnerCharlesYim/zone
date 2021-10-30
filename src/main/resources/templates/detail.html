@@ -23,12 +23,6 @@
 
                     </div>
 
-                    <!-- 回复编辑器 -->
-                    <div class="aw-mod aw-replay-box question">
-                        <a name="answer_form"></a>
-                        <p align="center">要回复问题请先<a href="https://elasticsearch.cn/account/login/">登录</a>或<a href="https://elasticsearch.cn/account/register/">注册</a></p>
-                    </div>
-                    <!-- end 回复编辑器 -->
                 </div>
 
 
@@ -205,9 +199,10 @@
 <script th:inline="javascript">
     $(function () {
         const param = location.href.split("/")[location.href.split("/").length - 1];
-        $.get("/post/"+param,{},function (res) {
-            if(res.state === 200){
-                let html = `
+        function getPost(param) {
+            $.get("/post/"+param,{},function (res) {
+                if(res.state === 200){
+                    let html = `
                       <div class="mod-head">
                             <h1>${res.data.title}</h1>
                             <em class="text-color-999">
@@ -226,31 +221,38 @@
                         <div class="mod-footer">
                             <div class="meta">
                                 <span class="text-color-999">${res.data.createdTime}</span>
-                                <a data-id="11725" data-type="question" class="aw-add-comment text-color-999  active" data-comment-count="0"><i class="glyphicon glyphicon-comment"></i>添加评论</a>
-
-                                <div class="pull-right more-operate">
-
-                                </div>
+                                <a data-type="question" id="rootReply" class="aw-add-comment text-color-999"><i class="glyphicon glyphicon-comment"></i>添加评论</a>
 
                             </div>
+                            <div class="replyBoxRoot" style="padding-top: 20px;">
+                              <div class="form-group">
+                                  <textarea class="form-control" rows="3" placeholder="发表神评妙论" style="margin: 0 16.5px 0 0; width: 800px; height: 76px;"></textarea>
+                              </div>
+                               <button type="button" class="btn btn-info reply-submit" style="width: 80px;">发表</button>
+                           </div>
 
                         </div>
 
                 `;
-                $("#main-content").html(html);
-                $("#commentCount").html(
-                    `<ul class="nav nav-tabs aw-nav-tabs active">
-                        <h2 class="hidden-xs">${res.data.commentCount} 个回复</h2>
+                    $("#main-content").html(html);
+
+                    $("#commentCount").html(
+                        `<ul class="nav nav-tabs aw-nav-tabs active">
+                        <h2 class="hidden-xs"><span>${res.data.commentCount}</span> 个回复</h2>
                     </ul>
                     `
-                )
-            }
-        });
-        $.get("/comment/list/"+param,{},function (res){
-            if(res.state === 200){
-                let html = ``;
-                for(let i=0;i<res.data.length;i++){
-                    html +=  `<div class="aw-item">
+                    )
+
+                }
+            });
+        }
+
+        function getCommentList(param) {
+            $.get("/comment/list/"+param,{},function (res){
+                if(res.state === 200){
+                    let html = ``;
+                    for(let i=0;i<res.data.length;i++){
+                        html +=  `<div class="aw-item">
                                 <div class="mod-head">
                                     <a class="anchor" name="answer_16761"></a>
                                     <!-- 用户头像 -->
@@ -272,7 +274,7 @@
                                 <div class="mod-footer">
                                     <!-- 社交操作 -->
                                     <div class="meta clearfix">
-                                            <span class="text-color-999 pull-right reply" flag="close" data-id="${res.data[i].uuid}" style="cursor: pointer">回复</span>
+                                            <span class="text-color-999 pull-right reply" flag="close" data-id="${res.data[i].id}" data-name="${res.data[i].author.username}" style="cursor: pointer">回复</span>
                                             <span class="text-color-999 pull-right" style="margin-right: 10px;">${res.data[i].createdTime}</span>
 
                                             <!-- 投票栏 -->
@@ -291,14 +293,14 @@
                                                 <div align="center" class="aw-padding10">暂无评论</div>
                                             </div>
                                        </div>`;
-                    }else{
+                        }else{
                             html += `  <div class="aw-comment-box">
                                             <div class="aw-comment-list">
                                                 <ul>
 
                                             `;
-                        for (let j=0;j<res.data[i].children.length;j++){
-                            html += `
+                            for (let j=0;j<res.data[i].children.length;j++){
+                                html += `
                                                     <li>
                                                         <a class="aw-user-name" href="#">
                                                             <img src="/css/default/img/avatar-mid-img.png" alt="" data-bd-imgshare-binded="1">
@@ -310,43 +312,54 @@
                                                             <p class="clearfix">
                                                                 @${res.data[i].children[j].replyToAuthor.username}&nbsp;
                                                                 ${res.data[i].children[j].content}
-                                                                <span class="text-color-999 pull-right replyTo" data-id="${res.data[i].uuid}" data-name="${res.data[i].children[j].author.username}" flag="close" style="cursor: pointer;float: right">回复</span>
+                                                                <span class="text-color-999 pull-right replyTo" data-id="${res.data[i].id}" data-name="${res.data[i].children[j].author.username}" flag="close" style="cursor: pointer;float: right">回复</span>
 
                                                             </p>
                                                         </div>
                                                     </li>
                                        `
-                        }
-                        html += `                </ul>
+                            }
+                            html += `                </ul>
                                              </div>
                                           </div>
 
                                     `
+                        }
+                        html += `</div></div>`
                     }
-                    html += `</div></div>`
-                }
-                $("#commentList").html(html);
+                    $("#commentList").html(html);
 
-            }
-        });
+                }
+            });
+
+        }
+
+        getPost(param);
+        getCommentList(param);
 
         const container = $(".container");
         //回复box
         const replyBox = ` <div class="replyBox" style="padding-bottom: 40px;">
                               <div class="form-group">
                                   <textarea class="form-control" rows="3" placeholder="发表神评妙论" style="margin: 0 16.5px 0 0; width: 728px; height: 76px;"></textarea>
-                              </div><button type="button" class="btn btn-info" style="width: 80px;">发表</button>
+                              </div><button type="button" class="btn btn-info reply-submit" style="width: 80px;">发表</button>
                            </div>`
 
         const replyBoxTo = ` <div class="replyBox" style="padding-top: 20px;">
                               <div class="form-group">
                                   <textarea class="form-control" rows="3" placeholder="" style="margin: 0 16.5px 0 0; width: 660px; height: 76px;"></textarea>
-                              </div><button type="button" class="btn btn-info" style="width: 80px;">发表</button>
+                              </div><button type="button" class="btn btn-info reply-submit" style="width: 80px;">发表</button>
                            </div>`
 
         container.on("click",'.add-comment',function () {
             let self = $(this);
             self.parent().parent().find(".aw-comment-box").toggle("slow");
+        })
+
+        //控制根评论盒子开关
+        container.on("click",'#rootReply',function () {
+            let self = $(this);
+            self.parent().parent().find(".replyBoxRoot").toggle("slow");
         })
 
         //根评论回复点击事件
@@ -358,7 +371,8 @@
                 $(".replyBox").remove();
                 self.parent().parent().find(".aw-comment-box").show();
                 self.parent().parent().find(".aw-comment-list").prepend(replyBox);
-                self.parent().parent().find(".replyBox button").attr("data-id",self.attr("data-id"));
+                self.parent().parent().find(".replyBox button").attr("data-id",self.attr("data-id")).attr("data-name",self.attr("data-name"));
+                self.parent().parent().find(".replyBox textarea").prop("placeholder","回复"+self.attr("data-name")+":");
                 self.attr("flag","open");
             }else{
                 $(".replyBox").remove();
@@ -374,13 +388,44 @@
                 $(".replyBox").remove();
                 self.parent().parent().after(replyBoxTo);
                 self.parent().parent().parent().find(".replyBox button").attr("data-id",self.attr("data-id")).attr("data-name",self.attr("data-name"));
-                self.parent().parent().parent().find(".replyBox textarea").prop("placeholder","回复"+self.attr("data-name"));
+                self.parent().parent().parent().find(".replyBox textarea").prop("placeholder","回复"+self.attr("data-name")+":");
                 self.attr("flag","open");
             }else{
                 $(".replyBox").remove();
                 self.attr("flag","close");
             }
 
+        })
+
+        container.on("click",".reply-submit",function (){
+            //登陆限制
+            const user = [[${session.frontUser}]];
+            if(!user){
+                $(".login-btn").click();
+                return;
+            }
+
+            const self = $(this);
+            let content = self.parent().find("textarea").val().trim();
+            if(content === ""){
+                sweetAlert.alertErrorToast("回复不能为空");
+                return;
+            }
+            $.post("/comment/add",{postUuid:param,
+                content:content,
+                commentId: self.attr("data-id"),
+                replyAuthor:self.attr("data-name")
+                },function (res) {
+                if(res.state === 200){
+                    self.parent().find("textarea").val("");
+                    //回复+1
+                    let countSpan = $("#commentCount span");
+                    countSpan.text(1 + parseInt(countSpan.text()));
+                    getCommentList(param);
+                }else{
+                    sweetAlert.alertError("发送失败，请稍后进行尝试");
+                }
+            })
         })
 
     })

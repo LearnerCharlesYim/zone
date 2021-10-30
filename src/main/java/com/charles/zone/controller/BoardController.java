@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class BoardController {
+public class BoardController extends BaseController{
 
     @Autowired
     private BoardService boardService;
