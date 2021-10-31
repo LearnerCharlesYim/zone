@@ -21,4 +21,10 @@ mybatis:
     map-underscore-to-camel-case: true
   type-aliases-package: com.charles.zone.domain
 
+#pagehelper分页
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+
 

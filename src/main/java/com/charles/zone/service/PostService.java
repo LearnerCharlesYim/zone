@@ -7,7 +7,7 @@ import java.util.List;
 public interface PostService {
     void add(Post post);
 
-    List<Post> list();
+    List<Post> list(Integer boardId);
 
     Post findByUuid(String uuid);
 }

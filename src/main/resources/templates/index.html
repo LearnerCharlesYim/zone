@@ -12,10 +12,10 @@
 				<div class="col-sm-12 col-md-9 aw-main-content">
 					<!-- tab切换 -->
 					<ul class="nav nav-tabs aw-nav-tabs active hidden-xs">
-						<li><a href="https://elasticsearch.cn/sort_type-unresponsive"><span style="color: #E51C37">消灭零回复</span></a></li>
-						<li><a href="https://elasticsearch.cn/sort_type-hot__day-7" id="sort_control_hot">热门</a></li>
-						<li><a href="https://elasticsearch.cn/is_recommend-1">推荐</a></li>
-						<li class="active"><a href="https://elasticsearch.cn/">最新</a></li>
+						<li><a href="javascript:;"><span style="color: #E51C37">消灭零回复</span></a></li>
+						<li><a href="javascript:;" id="sort_control_hot">热门</a></li>
+						<li><a href="javascript:;">推荐</a></li>
+						<li class="active"><a href="javascript:;">最新</a></li>
 
 						<h2 class="hidden-xs"><i class="glyphicon glyphicon-list" aria-hidden="true"></i> 发起</h2>
 					</ul>
@@ -23,20 +23,11 @@
 					<div class="aw-mod aw-explore-list">
 						<div class="mod-body">
 							<div class="aw-common-list">
-
+								<!-- body-->
 							</div>
 						</div>
 						<div class="mod-footer">
-							<div class="page-control">
-								<ul class="pagination pull-right">
-									<li class="active"><a href="javascript:;">1</a></li>
-									<li><a href="https://elasticsearch.cn/day-0__is_recommend-0__page-2">2</a></li>
-									<li><a href="https://elasticsearch.cn/day-0__is_recommend-0__page-3">3</a></li>
-									<li><a href="https://elasticsearch.cn/day-0__is_recommend-0__page-4">4</a></li>
-									<li><a href="https://elasticsearch.cn/day-0__is_recommend-0__page-2">&gt;</a></li>
-									<li><a href="https://elasticsearch.cn/day-0__is_recommend-0__page-778">&gt;&gt;</a></li>
-								</ul>
-							</div>
+							<!--page-control-->
 						</div>
 					</div>
 				</div>
@@ -52,36 +43,76 @@
 
 <div th:replace="~{component::footer}"></div>
 <script>
-	$(function () {
-		$.get("/post/list",{},function (res){
+	const _pageSize = 5;
+	let _boardId = null;
+	function getPosts(pageNum,pageSize,boardId) {
+		if(boardId){
+			_boardId = boardId;
+		}else{
+			_boardId = null;
+		}
+		$.get("/post/list",{pageNum:pageNum,pageSize:pageSize,boardId:boardId},function (res){
 			if(res.state === 200){
 				let ul = "";
-				for(i=0;i<res.data.length;i++){
+				for(i=0;i<res.data.list.length;i++){
 
 					let li = `<div class="aw-item " data-topic-id="">
 						<a class="aw-user-name hidden-xs" data-id="17637" href="#" rel="nofollow">
-							<img src="" alt=""/>
+							<img src="/css/default/img/avatar-mid-img.png" alt=""/>
 						</a>
 						<div class="aw-question-content">
 							<h4>
-								<a href="/article/${res.data[i].uuid}">${res.data[i].title}</a>
+								<a href="/article/${res.data.list[i].uuid}">${res.data.list[i].title}</a>
 							</h4>
-							<a href="/article/${res.data[i].uuid}"
+							<a href="/article/${res.data.list[i].uuid}"
 							   class="pull-right text-color-999">回复</a>
 							<p>
 								<a class="aw-question-tags"
-								   href="https://elasticsearch.cn/explore/category-2">${res.data[i].board.name}</a>•
-								<a href="https://elasticsearch.cn/people/Kevin_23" class="aw-user-name">${res.data[i].author.username}</a>
-								<span class="text-color-999">${res.data[i].commentCount} 个回复 • ${res.data[i].viewCount} 次浏览 • ${res.data[i].createdTime}</span>
+								   href="https://elasticsearch.cn/explore/category-2">${res.data.list[i].board.name}</a>•
+								<a href="https://elasticsearch.cn/people/Kevin_23" class="aw-user-name">${res.data.list[i].author.username}</a>
+								<span class="text-color-999">${res.data.list[i].commentCount} 个回复 • ${res.data.list[i].viewCount} 次浏览 • ${res.data.list[i].createdTime}</span>
 
 							</p>
 						</div>
 					</div>`;
 					ul +=li;
 				}
-				$(".aw-common-list").html(ul)
+				$(".aw-common-list").html(ul);
+				//设置页面
+				let pageControl = `<div class="page-control">
+										<ul class="pagination pull-right">`;
+				if(! res.data.isFirstPage){
+					pageControl +=	    	`<li><span onclick="getPosts(${res.data.firstPage},_pageSize,_boardId)"><a href="javascript:;">&lt;&lt;</a></span></li>`;
+				}
+				if(res.data.hasPreviousPage){
+					pageControl +=			`<li><span onclick="getPosts(${res.data.prePage},_pageSize,_boardId)"><a href="javascript:;">&lt;</a></span></li>`;
+				}
+
+				for(let j=0;j<res.data.pages;j++){
+					if(j+1 === res.data.pageNum){
+						pageControl += `	 <li class="active"><span onclick="getPosts(${j+1},_pageSize,_boardId)" style="cursor: pointer"><a href="javascript:;"">${j+1}</a></span></li>`;
+					}else{
+						pageControl += `	 <li><span onclick="getPosts(${j+1},_pageSize,_boardId)" style="cursor: pointer"><a href="javascript:;"">${j+1}</a></span></li>`;
+
+					}
+				}
+				if(res.data.hasNextPage){
+					pageControl +=          `<li><span onclick="getPosts(${res.data.nextPage},_pageSize,_boardId)"><a href="javascript:;">&gt;</a></span></li>`;
+				}
+				if(! res.data.isLastPage)
+					pageControl +=          `<li><span onclick="getPosts(${res.data.lastPage},_pageSize,_boardId)"><a href="javascript:;">&gt;&gt;</a></span></li>`;
+
+				pageControl +=              `
+										</ul>
+									</div>`
+				$(".mod-footer").html(pageControl);
 			}
 		})
+	}
+
+	$(function () {
+		//访问首页第一次请求第一页数据pageNum:1
+		getPosts(1,_pageSize);
 	});
 </script>
 </body>

@@ -9,7 +9,7 @@ import java.util.List;
 public interface PostMapper {
     Integer insert(Post post);
 
-    List<Post> findAll();
+    List<Post> findAll(Integer boardId);
 
     Post findByUuid(String uuid);
 }

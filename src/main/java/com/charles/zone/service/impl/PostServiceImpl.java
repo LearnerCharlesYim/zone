@@ -23,8 +23,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> list() {
-        return postMapper.findAll();
+    public List<Post> list(Integer boardId) {
+        return postMapper.findAll(boardId);
     }
 
     @Override

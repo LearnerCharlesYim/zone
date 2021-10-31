@@ -44,8 +44,9 @@ public class PostMapperTests {
 
     @Test
     public void findAll(){
-        List<Post> postList = postMapper.findAll();
-        System.out.println(postList.get(0).getUuid().equals("73dbc7fb-a7b9-4200-b5e9-782d3c0a9598"));
+        List<Post> postList = postMapper.findAll(null);
+        System.out.println(postList);
+        //System.out.println(postList.get(0).getUuid().equals("73dbc7fb-a7b9-4200-b5e9-782d3c0a9598"));
     }
 
     @Test

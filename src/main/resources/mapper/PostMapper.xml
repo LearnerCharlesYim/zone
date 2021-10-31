@@ -32,7 +32,7 @@
         values (#{uuid},#{title},#{content},#{createdTime},#{board.id},#{author.id},#{viewCount})
     </insert>
 
-    <select id="findAll" resultMap="postMap">
+    <select id="findAll" resultMap="postMap" parameterType="integer">
         SELECT
             *
         FROM
@@ -51,6 +51,11 @@
                  `comment`
                  ON
                      post.uuid= `comment`.post_uuid
+                <where>
+                    <if test="boardId!=null">
+                        and board_id = #{boardId}
+                    </if>
+                </where>
              GROUP BY
                  post.id) p1,front_user,board
         WHERE

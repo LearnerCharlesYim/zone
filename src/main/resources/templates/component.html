@@ -43,7 +43,7 @@
     <div class="aw-search-box  hidden-xs hidden-sm">
 
       <!-- 旧的搜索框 -->
-      <form class="navbar-search" action="https://elasticsearch.cn/search/" id="global_search_form" method="post">
+      <form class="navbar-search" action="/" id="global_search_form" method="post">
         <input class="form-control search-query" type="text" placeholder="搜索问题、话题或人" autocomplete="off" name="q" id="aw-search-query" />
         <span title="搜索" id="global_search_btns" onClick="$('#global_search_form').submit();"><i class="glyphicon glyphicon-search" aria-hidden="true"></i></span>
         <div class="aw-dropdown">
@@ -65,10 +65,10 @@
       <nav role="navigation" class="collapse navbar-collapse bs-navbar-collapse">
         <ul class="nav navbar-nav">
           <li><a th:href="@{/}" class="active"><i class="glyphicon glyphicon-list" aria-hidden="true"></i> 发现</a></li>
-          <li><a href="https://elasticsearch.cn/slides/"><i class="glyphicon glyphicon-share" aria-hidden="true"></i> 分享</a></li>
-          <li><a href="https://elasticsearch.cn/article/" class=""><i class="glyphicon glyphicon-list-alt" aria-hidden="true"></i> 文章</a></li>
-          <li><a href="https://elasticsearch.cn/event/"><i class="glyphicon glyphicon-link" aria-hidden="true"></i> 活动</a></li>
-          <li><a href="https://elasticsearch.cn/download/"><i class="glyphicon glyphicon-save" aria-hidden="true"></i> 下载</a></li>
+          <li><a href="#"><i class="glyphicon glyphicon-share" aria-hidden="true"></i> 分享</a></li>
+          <li><a href="#" class=""><i class="glyphicon glyphicon-list-alt" aria-hidden="true"></i> 文章</a></li>
+          <li><a href="#"><i class="glyphicon glyphicon-link" aria-hidden="true"></i> 活动</a></li>
+          <li><a href="#"><i class="glyphicon glyphicon-save" aria-hidden="true"></i> 下载</a></li>
 
         </ul>
       </nav>
@@ -126,12 +126,16 @@
     $(function () {
       $.get("/getBoardList",{},function (res) {
         if(res.state === 200){
-          let html = '<li class="active"><a href="/">全部</a></li>';
+          let html = '<li class="active" onclick="getPosts(1,_pageSize)"><a style="text-decoration: none" href="javascript:;">全部</a></li>';
           for(i=0;i<res.data.length;i++){
-            html += ` <li><a href="#">${res.data[i].name}</a></li>`
+            html += ` <li onclick="getPosts(1,_pageSize,${res.data[i].id})"><a style="text-decoration: none" href="javascript:;">${res.data[i].name}</a></li>`
           }
           $(".category-list").html(html);
         }
+      })
+      $(".category-list").on("click","li",function () {
+        const self = $(this);
+        self.addClass("active").siblings().removeClass("active");
       })
     })
   </script>

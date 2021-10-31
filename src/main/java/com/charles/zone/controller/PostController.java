@@ -3,6 +3,8 @@ package com.charles.zone.controller;
 import com.charles.zone.domain.Post;
 import com.charles.zone.service.PostService;
 import com.charles.zone.utils.JsonResult;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,11 +21,13 @@ public class PostController extends BaseController{
     private PostService postService;
 
     @GetMapping("/list")
-    public JsonResult<List<Post>> list(){
-        List<Post> postList = postService.list();
-        JsonResult<List<Post>> result = new JsonResult<>();
+    public JsonResult<PageInfo<Post>> list(Integer pageNum,Integer pageSize,Integer boardId){
+        PageHelper.startPage(pageNum,pageSize);
+        List<Post> postList = postService.list(boardId);
+        PageInfo<Post> pageInfo = new PageInfo<>(postList);
+        JsonResult<PageInfo<Post>> result = new JsonResult<>();
         result.setState(200);
-        result.setData(postList);
+        result.setData(pageInfo);
         return result;
     }
 
